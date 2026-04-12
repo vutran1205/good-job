@@ -1,0 +1,49 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: good_job_db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: good_job_cache
+
+  minio:
+    image: minio/minio
+    container_name: good_job_storage
+    command: server /data --console-address ":9001"
+    ports:
+      - '9001:9001'
+    env_file:
+      - .env
+    volumes:
+      - minio_data:/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: good_job_api
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    # Override URLs with internal Docker hostnames (replaces localhost values from .env)
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/goodjob
+      REDIS_URL: redis://redis:6379
+      MINIO_ENDPOINT: http://minio:9000
+    volumes:
+      - ./src:/app/apps/api/src
+      - ./prisma:/app/apps/api/prisma
+    depends_on:
+      - postgres
+      - redis
+      - minio
+
+volumes:
+  postgres_data:
+  minio_data:

@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Environment
+apps/api/.env
+apps/web/.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+
+# Uploads / media
+apps/api/uploads/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Prisma generated
+apps/api/node_modules/.prisma/
+
+# Test coverage
+coverage/

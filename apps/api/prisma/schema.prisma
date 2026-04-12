@@ -1,0 +1,108 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String        @id @default(cuid())
+  name            String
+  email           String        @unique
+  passwordHash    String
+  receivedBalance Int           @default(0)
+  createdAt       DateTime      @default(now())
+  kudosSent       Kudo[]        @relation("Sender")
+  kudosReceived   Kudo[]        @relation("Recipient")
+  givingBudget    GivingBudget?
+  reactions       Reaction[]
+  comments        Comment[]
+  redemptions     Redemption[]
+  ledgerEntries   LedgerEntry[]
+}
+
+model GivingBudget {
+  id        String @id @default(cuid())
+  userId    String @unique
+  month     String // "2026-04"
+  remaining Int    @default(200)
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model Kudo {
+  id          String      @id @default(cuid())
+  senderId    String
+  recipientId String
+  points      Int
+  description String
+  tag         String
+  createdAt   DateTime    @default(now())
+  sender      User        @relation("Sender", fields: [senderId], references: [id])
+  recipient   User        @relation("Recipient", fields: [recipientId], references: [id])
+  media       KudoMedia[]
+  reactions   Reaction[]
+  comments    Comment[]
+}
+
+model KudoMedia {
+  id     String @id @default(cuid())
+  kudoId String
+  type   String // "image" | "video"
+  url    String
+  status String @default("pending") // pending | ready
+  kudo   Kudo   @relation(fields: [kudoId], references: [id], onDelete: Cascade)
+}
+
+model Reaction {
+  id     String @id @default(cuid())
+  kudoId String
+  userId String
+  emoji  String
+  kudo   Kudo   @relation(fields: [kudoId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([kudoId, userId, emoji])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  kudoId    String
+  userId    String
+  text      String?
+  mediaUrl  String?
+  createdAt DateTime @default(now())
+  kudo      Kudo     @relation(fields: [kudoId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RewardItem {
+  id          String       @id @default(cuid())
+  name        String
+  pointCost   Int
+  description String?
+  stock       Int?         // null = unlimited
+  redemptions Redemption[]
+}
+
+model Redemption {
+  id           String     @id @default(cuid())
+  userId       String
+  rewardItemId String
+  status       String     @default("pending") // pending | approved | rejected
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id])
+  rewardItem   RewardItem @relation(fields: [rewardItemId], references: [id])
+}
+
+model LedgerEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  delta     Int
+  reason    String // "kudo_received" | "redemption" | "budget_reset"
+  refId     String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
