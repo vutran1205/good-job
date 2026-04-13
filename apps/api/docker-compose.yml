@@ -2,14 +2,25 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: good_job_db
-    env_file:
-      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - db_network
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
     container_name: good_job_cache
+    networks:
+      - cache_network
 
   minio:
     image: minio/minio
@@ -17,10 +28,13 @@ services:
     command: server /data --console-address ":9001"
     ports:
       - '9001:9001'
-    env_file:
-      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
-      - minio_data:/data
+      - storage_data:/data
+    networks:
+      - storage_network
 
   api:
     build:
@@ -31,19 +45,29 @@ services:
       - '3000:3000'
     env_file:
       - .env
-    # Override URLs with internal Docker hostnames (replaces localhost values from .env)
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/goodjob
-      REDIS_URL: redis://redis:6379
-      MINIO_ENDPOINT: http://minio:9000
     volumes:
       - ./src:/app/apps/api/src
       - ./prisma:/app/apps/api/prisma
     depends_on:
-      - postgres
-      - redis
-      - minio
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+    networks:
+      - db_network
+      - cache_network
+      - storage_network
 
 volumes:
-  postgres_data:
-  minio_data:
+  db_data:
+  storage_data:
+
+networks:
+  db_network:
+    driver: bridge
+  cache_network:
+    driver: bridge
+  storage_network:
+    driver: bridge

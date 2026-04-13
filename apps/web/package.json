@@ -24,6 +24,10 @@
     "react-router-dom": "^6.26.0",
     "zustand": "^4.5.4"
   },
+  "engines": {
+    "node": "20.20.2",
+    "npm": "10.8.2"
+  },
   "devDependencies": {
     "@testing-library/react": "^16.0.0",
     "@types/react": "^18.3.3",
