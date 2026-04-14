@@ -9,7 +9,7 @@ export function GlobalSnackbar() {
       open={open}
       autoHideDuration={4000}
       onClose={close}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >
       <Alert severity={severity} onClose={close} variant="filled">
         {message}

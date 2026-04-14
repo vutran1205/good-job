@@ -7,6 +7,7 @@ import { Feed } from './pages/Feed';
 import { Rewards } from './pages/Rewards';
 import { Profile } from './pages/Profile';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
 import { Box } from '@mui/material';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default function App() {
       <Box component="main" sx={{ pt: token ? 8 : 0 }}>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path="/send" element={<ProtectedRoute><Navigate to="/" state={{ openComposer: true }} replace /></ProtectedRoute>} />
           <Route path="/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />

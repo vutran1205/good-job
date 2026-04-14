@@ -81,14 +81,14 @@ export function Feed() {
               {currentUser?.name?.[0]?.toUpperCase() ?? '?'}
             </Avatar>
             <Box
-              sx={{
+              sx={(theme) => ({
                 flex: 1,
-                bgcolor: alpha('#6c47ff', 0.05),
-                border: `1px solid ${alpha('#6c47ff', 0.15)}`,
+                bgcolor: alpha(theme.palette.primary.main, 0.05),
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
                 borderRadius: 5,
                 px: 2, py: 1,
                 cursor: 'text',
-              }}
+              })}
             >
               <Typography variant="body2" color="text.secondary">
                 Who do you want to recognize today?
@@ -97,11 +97,11 @@ export function Feed() {
           </Box>
 
           {/* Quick action buttons */}
-          <Box sx={{
+          <Box sx={(theme) => ({
             display: 'flex', gap: 1,
-            borderTop: `1px solid ${alpha('#6c47ff', 0.08)}`,
+            borderTop: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
             pt: 1.5, mt: 0.5,
-          }}>
+          })}>
             <Button
               size="small"
               startIcon={<span style={{ fontSize: 16 }}>📷</span>}
@@ -175,12 +175,12 @@ export function Feed() {
             textAlign: 'center', py: 10,
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
           }}>
-            <Box sx={{
+            <Box sx={(theme) => ({
               width: 80, height: 80, borderRadius: '50%',
-              background: 'linear-gradient(135deg, #6c47ff 0%, #8b6dff 100%)',
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <EmojiEventsIcon sx={{ fontSize: 40, color: '#fff' }} />
+            })}>
+              <EmojiEventsIcon sx={{ fontSize: 40, color: 'primary.contrastText' }} />
             </Box>
             <Typography variant="h6" fontWeight={700}>No kudos yet</Typography>
             <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 280 }}>
@@ -196,6 +196,9 @@ export function Feed() {
           </Box>
         </Fade>
       )}
+
+
+      
 
       {/* Composer Dialog */}
       <KudoComposerDialog open={composerOpen} onClose={() => setComposerOpen(false)} />

@@ -12,7 +12,7 @@ import {
   Stack,
   Divider,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import SendIcon from '@mui/icons-material/Send';
 import { useState } from 'react';
@@ -52,12 +52,13 @@ function formatRelativeTime(iso: string): string {
 }
 
 export function KudoCard({ kudo }: KudoCardProps) {
+  const theme = useTheme();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [reactions, setReactions] = useState<Reaction[]>(kudo.reactions);
   const [comments, setComments] = useState<Comment[]>(kudo.comments);
 
-  const tagMeta = CORE_VALUE_META[kudo.tag] ?? { color: '#6c47ff', bg: alpha('#6c47ff', 0.12) };
+  const tagMeta = CORE_VALUE_META[kudo.tag] ?? { color: theme.palette.primary.main, bg: alpha(theme.palette.primary.main, 0.12) };
 
   async function addReaction(emoji: string) {
     const { data } = await api.post(`/api/kudos/${kudo.id}/reactions`, { emoji });
@@ -136,11 +137,11 @@ export function KudoCard({ kudo }: KudoCardProps) {
           ) : m.status === 'ready' ? (
             <Box key={m.id} component="video" src={m.url} controls sx={{ mt: 1, maxWidth: '100%', borderRadius: 2 }} />
           ) : (
-            <Box key={m.id} sx={{
+            <Box key={m.id} sx={(theme) => ({
               mt: 1, p: 2, borderRadius: 2,
-              bgcolor: alpha('#f59e0b', 0.08),
-              border: `1px solid ${alpha('#f59e0b', 0.2)}`,
-            }}>
+              bgcolor: alpha(theme.palette.warning.main, 0.08),
+              border: `1px solid ${alpha(theme.palette.warning.main, 0.2)}`,
+            })}>
               <Typography variant="caption" color="warning.main">⏳ Video is processing...</Typography>
             </Box>
           ),
@@ -151,12 +152,12 @@ export function KudoCard({ kudo }: KudoCardProps) {
           <Chip
             label={`+${kudo.points} pts`}
             size="small"
-            sx={{
-              background: 'linear-gradient(135deg, #6c47ff 0%, #8b6dff 100%)',
-              color: '#fff',
+            sx={(theme) => ({
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
+              color: theme.palette.primary.contrastText,
               fontWeight: 700,
               fontSize: '0.75rem',
-            }}
+            })}
           />
         </Box>
       </CardContent>
@@ -171,21 +172,21 @@ export function KudoCard({ kudo }: KudoCardProps) {
               component="button"
               type="button"
               onClick={() => addReaction(emoji)}
-              sx={{
+              sx={(theme) => ({
                 display: 'inline-flex', alignItems: 'center', gap: 0.5,
                 border: '1.5px solid',
-                borderColor: count > 0 ? '#6c47ff' : alpha('#1a1033', 0.15),
-                bgcolor: count > 0 ? alpha('#6c47ff', 0.1) : 'transparent',
+                borderColor: count > 0 ? theme.palette.primary.main : alpha(theme.palette.primary.main, 0.2),
+                bgcolor: count > 0 ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
                 borderRadius: '20px', px: 1.25, py: 0.375,
                 cursor: 'pointer', fontSize: '0.85rem', fontFamily: 'inherit',
                 transition: 'all 0.15s ease',
                 outline: 'none',
                 '&:hover': {
-                  bgcolor: alpha('#6c47ff', 0.1),
-                  borderColor: '#6c47ff',
+                  bgcolor: alpha(theme.palette.primary.main, 0.1),
+                  borderColor: theme.palette.primary.main,
                 },
                 '&:active': { animation: 'pop 0.2s ease' },
-              }}
+              })}
             >
               <span>{emoji}</span>
               {count > 0 && (
@@ -201,12 +202,12 @@ export function KudoCard({ kudo }: KudoCardProps) {
           <IconButton
             size="small"
             onClick={() => setShowComments((v) => !v)}
-            sx={{
+            sx={(theme) => ({
               color: showComments ? 'primary.main' : 'text.secondary',
-              bgcolor: showComments ? alpha('#6c47ff', 0.08) : 'transparent',
+              bgcolor: showComments ? alpha(theme.palette.primary.main, 0.08) : 'transparent',
               borderRadius: 2,
               gap: 0.5,
-            }}
+            })}
           >
             <ChatBubbleOutlineIcon fontSize="small" />
             {comments.length > 0 && (
@@ -226,12 +227,12 @@ export function KudoCard({ kudo }: KudoCardProps) {
                 <Avatar sx={{ width: 28, height: 28, fontSize: 12, flexShrink: 0 }}>
                   {c.user.name[0].toUpperCase()}
                 </Avatar>
-                <Box sx={{
-                  bgcolor: alpha('#6c47ff', 0.05),
-                  border: `1px solid ${alpha('#6c47ff', 0.08)}`,
+                <Box sx={(theme) => ({
+                  bgcolor: alpha(theme.palette.primary.main, 0.05),
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
                   borderRadius: '0 10px 10px 10px',
                   px: 1.5, py: 0.75, flex: 1,
-                }}>
+                })}>
                   <Typography variant="caption" fontWeight={700} color="text.primary">
                     {c.user.name}
                   </Typography>
@@ -256,10 +257,10 @@ export function KudoCard({ kudo }: KudoCardProps) {
               size="small"
               onClick={addComment}
               disabled={!commentText.trim()}
-              sx={{
-                bgcolor: commentText.trim() ? alpha('#6c47ff', 0.1) : 'transparent',
-                '&:hover': { bgcolor: alpha('#6c47ff', 0.2) },
-              }}
+              sx={(theme) => ({
+                bgcolor: commentText.trim() ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+                '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) },
+              })}
             >
               <SendIcon fontSize="small" />
             </IconButton>

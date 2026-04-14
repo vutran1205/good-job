@@ -44,15 +44,15 @@ export function Profile() {
 
       {/* Banner + Avatar */}
       <Box sx={{ position: 'relative', mb: 8 }}>
-        <Box sx={{
+        <Box sx={(theme) => ({
           height: 100,
-          background: 'linear-gradient(135deg, #6c47ff 0%, #8b6dff 100%)',
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
           borderRadius: 3,
-        }} />
+        })} />
         <Avatar sx={{
           width: 72, height: 72, fontSize: 28,
-          backgroundColor: '#fff', color: 'primary.main', fontWeight: 700,
-          border: '4px solid #fff',
+          bgcolor: 'background.paper', color: 'primary.main', fontWeight: 700,
+          border: '4px solid', borderColor: 'background.default',
           position: 'absolute', bottom: -44, left: 24,
           boxShadow: 3,
         }}>
@@ -67,11 +67,11 @@ export function Profile() {
 
       {/* Stat cards */}
       <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-        <Paper sx={{
+        <Paper sx={(theme) => ({
           flex: 1, p: 2.5, textAlign: 'center',
-          background: `linear-gradient(135deg, ${alpha('#6c47ff', 0.08)} 0%, ${alpha('#6c47ff', 0.02)} 100%)`,
-          border: `1px solid ${alpha('#6c47ff', 0.12)}`,
-        }}>
+          background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`,
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.12)}`,
+        })}>
           <EmojiEventsIcon sx={{ color: 'primary.main', mb: 0.5 }} />
           <Typography variant="h4" fontWeight={700} color="primary.main">
             {profile?.receivedBalance ?? 0}
@@ -80,11 +80,11 @@ export function Profile() {
         </Paper>
 
         {profile?.givingBudget && (
-          <Paper sx={{
+          <Paper sx={(theme) => ({
             flex: 1, p: 2.5, textAlign: 'center',
-            background: `linear-gradient(135deg, ${alpha('#ff6b6b', 0.08)} 0%, ${alpha('#ff6b6b', 0.02)} 100%)`,
-            border: `1px solid ${alpha('#ff6b6b', 0.12)}`,
-          }}>
+            background: `linear-gradient(135deg, ${alpha(theme.palette.secondary.main, 0.08)} 0%, ${alpha(theme.palette.secondary.main, 0.02)} 100%)`,
+            border: `1px solid ${alpha(theme.palette.secondary.main, 0.12)}`,
+          })}>
             <CardGiftcardIcon sx={{ color: 'secondary.main', mb: 0.5 }} />
             <Typography variant="h4" fontWeight={700} color="secondary.main">
               {profile.givingBudget.remaining}
@@ -111,11 +111,11 @@ export function Profile() {
                 divider={idx < ledger.length - 1}
                 sx={{ gap: 1.5, py: 1.5 }}
               >
-                <Box sx={{
+                <Box sx={(theme) => ({
                   width: 36, height: 36, borderRadius: 2, flexShrink: 0,
-                  bgcolor: entry.delta > 0 ? alpha('#22c55e', 0.12) : alpha('#ef4444', 0.12),
+                  bgcolor: entry.delta > 0 ? alpha(theme.palette.success.main, 0.12) : alpha(theme.palette.error.main, 0.12),
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
+                })}>
                   {entry.delta > 0
                     ? <TrendingUpIcon sx={{ fontSize: 18, color: 'success.main' }} />
                     : <TrendingDownIcon sx={{ fontSize: 18, color: 'error.main' }} />

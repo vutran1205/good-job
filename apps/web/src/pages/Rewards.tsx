@@ -60,7 +60,6 @@ export function Rewards() {
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
       <Typography variant="h5" fontWeight={700} sx={{ mb: 3 }}>Reward Catalog</Typography>
-
       <Grid container spacing={2}>
         {rewards.map((r) => {
           const outOfStock = r.stock !== null && r.stock <= 0;

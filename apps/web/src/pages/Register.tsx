@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Box, Button, TextField, Typography,
-  Checkbox, FormControlLabel, Divider, InputAdornment, IconButton,
+  Divider, InputAdornment, IconButton,
 } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Visibility from '@mui/icons-material/Visibility';
@@ -14,17 +14,20 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { useNotificationStore } from '../store/notification.store';
 
-const REMEMBER_KEY = 'gj_remember';
-
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  confirmPassword: z.string(),
+}).refine((d) => d.password === d.confirmPassword, {
+  message: 'Passwords do not match',
+  path: ['confirmPassword'],
 });
-type LoginForm = z.infer<typeof loginSchema>;
+type RegisterForm = z.infer<typeof registerSchema>;
 
-export function Login() {
-  const [rememberMe, setRememberMe] = useState(false);
+export function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const setAuth = useAuthStore((s) => s.setAuth);
   const showNotification = useNotificationStore((s) => s.show);
   const navigate = useNavigate();
@@ -33,35 +36,14 @@ export function Login() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: (() => {
-      try {
-        const saved = localStorage.getItem(REMEMBER_KEY);
-        if (saved) {
-          const { email, password } = JSON.parse(saved);
-          return { email: email ?? '', password: password ?? '' };
-        }
-      } catch { /* ignore */ }
-      return { email: '', password: '' };
-    })(),
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   });
 
-  useEffect(() => {
+  async function onSubmit({ name, email, password }: RegisterForm) {
     try {
-      const saved = localStorage.getItem(REMEMBER_KEY);
-      if (saved) setRememberMe(true);
-    } catch { /* ignore */ }
-  }, []);
-
-  async function onSubmit(values: LoginForm) {
-    try {
-      const { data } = await axios.post('/api/auth/login', values, { withCredentials: true });
-      if (rememberMe) {
-        localStorage.setItem(REMEMBER_KEY, JSON.stringify(values));
-      } else {
-        localStorage.removeItem(REMEMBER_KEY);
-      }
+      const { data } = await axios.post('/api/auth/register', { name, email, password }, { withCredentials: true });
       setAuth(data.user, data.accessToken);
       navigate('/');
     } catch (err: unknown) {
@@ -85,14 +67,14 @@ export function Login() {
       }}>
         {/* Decorative blobs */}
         <Box sx={{
-          position: 'absolute', width: 400, height: 400, borderRadius: '50%',
+          position: 'absolute', width: 350, height: 350, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(108,71,255,0.3) 0%, transparent 70%)',
-          top: -80, left: -80, pointerEvents: 'none',
+          top: 40, left: -60, pointerEvents: 'none',
         }} />
         <Box sx={{
-          position: 'absolute', width: 300, height: 300, borderRadius: '50%',
+          position: 'absolute', width: 280, height: 280, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(255,107,107,0.15) 0%, transparent 70%)',
-          bottom: 40, right: -60, pointerEvents: 'none',
+          bottom: -40, right: 20, pointerEvents: 'none',
         }} />
 
         <Box sx={{ position: 'relative', textAlign: 'center' }}>
@@ -108,14 +90,14 @@ export function Login() {
             Good Job
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 320, mx: 'auto', lineHeight: 1.6 }}>
-            Recognise your teammates,<br />celebrate great work together.
+            Be part of a culture that<br />celebrates every win.
           </Typography>
 
           <Box sx={{ mt: 6, display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
             {[
-              { icon: '🎯', text: 'Send Kudos with Core Value tags' },
-              { icon: '💰', text: 'Earn & redeem reward points' },
-              { icon: '⚡', text: 'Real-time recognition feed' },
+              { icon: '🏆', text: '200 pts/month to give to teammates' },
+              { icon: '🎁', text: 'Redeem points for real rewards' },
+              { icon: '🌟', text: 'Build a culture of appreciation' },
             ].map(({ icon, text }) => (
               <Box key={text} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                 <Typography fontSize={22}>{icon}</Typography>
@@ -151,13 +133,20 @@ export function Login() {
           </Box>
 
           <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
-            Welcome back
+            Create your account
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-            Sign in to your account to continue
+            Join the team and start recognising great work
           </Typography>
 
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <TextField
+              label="Full Name"
+              fullWidth
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
             <TextField
               label="Email"
               fullWidth
@@ -184,16 +173,24 @@ export function Login() {
                 },
               }}
             />
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  size="small"
-                />
-              }
-              label={<Typography variant="body2">Remember me</Typography>}
+            <TextField
+              label="Confirm Password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              fullWidth
+              {...register('confirmPassword')}
+              error={!!errors.confirmPassword}
+              helperText={errors.confirmPassword?.message}
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowConfirmPassword((v) => !v)} edge="end">
+                        {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
             />
 
             <Button
@@ -203,22 +200,22 @@ export function Login() {
               disabled={isSubmitting}
               sx={{ mt: 0.5, py: 1.5, fontSize: 16 }}
             >
-              {isSubmitting ? 'Signing in…' : 'Sign in'}
+              {isSubmitting ? 'Creating account…' : 'Create account'}
             </Button>
           </Box>
 
           <Divider sx={{ my: 3 }} />
 
           <Typography variant="body2" align="center" color="text.secondary">
-            Don&apos;t have an account?{' '}
+            Already have an account?{' '}
             <Button
               component={Link}
-              to="/register"
+              to="/login"
               variant="text"
               color="primary"
               sx={{ p: 0, minWidth: 0, fontWeight: 600, fontSize: 'inherit' }}
             >
-              Create one
+              Sign in
             </Button>
           </Typography>
         </Box>

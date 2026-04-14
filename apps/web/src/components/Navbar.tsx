@@ -34,7 +34,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const { user, logout } = useAuthStore();
 
-  const [navAnchor, setNavAnchor]     = useState<null | HTMLElement>(null);
+  const [navAnchor, setNavAnchor]         = useState<null | HTMLElement>(null);
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
   const navOpen     = Boolean(navAnchor);
   const profileOpen = Boolean(profileAnchor);
@@ -60,12 +60,12 @@ export function Navbar() {
           onClick={() => navigate('/')}
           sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', userSelect: 'none' }}
         >
-          <Box sx={{
+          <Box sx={(theme) => ({
             width: 30, height: 30, borderRadius: 1.5, flexShrink: 0,
-            background: 'linear-gradient(135deg, #6c47ff 0%, #8b6dff 100%)',
+            background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <EmojiEventsIcon sx={{ fontSize: 18, color: '#fff' }} />
+          })}>
+            <EmojiEventsIcon sx={{ fontSize: 18, color: 'primary.contrastText' }} />
           </Box>
           <Typography
             variant="subtitle1" fontWeight={700}
@@ -81,16 +81,21 @@ export function Navbar() {
           {user && (
             <ButtonBase
               onClick={(e) => setProfileAnchor(profileOpen ? null : e.currentTarget)}
-              sx={{
+              sx={(theme) => ({
                 display: 'flex', alignItems: 'center', gap: 1,
                 px: 0.75, py: 0.625,
                 border: '1.5px solid',
-                borderColor: profileOpen ? alpha('#6c47ff', 0.4) : alpha('#6c47ff', 0.15),
+                borderColor: profileOpen
+                  ? alpha(theme.palette.primary.main, 0.4)
+                  : alpha(theme.palette.primary.main, 0.15),
                 borderRadius: 3,
-                bgcolor: profileOpen ? alpha('#6c47ff', 0.06) : 'transparent',
+                bgcolor: profileOpen ? alpha(theme.palette.primary.main, 0.06) : 'transparent',
                 transition: 'all 0.15s ease',
-                '&:hover': { borderColor: alpha('#6c47ff', 0.35), bgcolor: alpha('#6c47ff', 0.05) },
-              }}
+                '&:hover': {
+                  borderColor: alpha(theme.palette.primary.main, 0.35),
+                  bgcolor: alpha(theme.palette.primary.main, 0.05),
+                },
+              })}
             >
               <Avatar sx={{ width: 30, height: 30, fontSize: 12, flexShrink: 0 }}>
                 {user.name[0].toUpperCase()}
@@ -102,16 +107,24 @@ export function Navbar() {
                   {user.name}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.5, mt: 0.25 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.375, bgcolor: alpha('#6c47ff', 0.1), borderRadius: 0.75, px: 0.625, py: 0.125 }}>
-                    <EmojiEventsOutlinedIcon sx={{ fontSize: 10, color: '#6c47ff' }} />
-                    <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, color: '#6c47ff', lineHeight: 1 }}>
+                  <Box sx={(theme) => ({
+                    display: 'flex', alignItems: 'center', gap: 0.375,
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    borderRadius: 0.75, px: 0.625, py: 0.125,
+                  })}>
+                    <EmojiEventsOutlinedIcon sx={{ fontSize: 10, color: 'primary.main' }} />
+                    <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
                       {user.receivedBalance ?? 0}
                     </Typography>
                   </Box>
                   {user.givingBudget && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.375, bgcolor: alpha('#ff6b6b', 0.1), borderRadius: 0.75, px: 0.625, py: 0.125 }}>
-                      <CardGiftcardIcon sx={{ fontSize: 10, color: '#e04545' }} />
-                      <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, color: '#e04545', lineHeight: 1 }}>
+                    <Box sx={(theme) => ({
+                      display: 'flex', alignItems: 'center', gap: 0.375,
+                      bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                      borderRadius: 0.75, px: 0.625, py: 0.125,
+                    })}>
+                      <CardGiftcardIcon sx={{ fontSize: 10, color: 'secondary.dark' }} />
+                      <Typography sx={{ fontSize: '0.65rem', fontWeight: 700, color: 'secondary.dark', lineHeight: 1 }}>
                         {user.givingBudget.remaining}
                       </Typography>
                     </Box>
@@ -124,14 +137,14 @@ export function Navbar() {
           {/* Hamburger button */}
           <ButtonBase
             onClick={(e) => setNavAnchor(navOpen ? null : e.currentTarget)}
-            sx={{
+            sx={(theme) => ({
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 38, height: 38, borderRadius: 2,
               color: navOpen ? 'primary.main' : 'text.secondary',
-              bgcolor: navOpen ? alpha('#6c47ff', 0.08) : 'transparent',
+              bgcolor: navOpen ? alpha(theme.palette.primary.main, 0.08) : 'transparent',
               transition: 'all 0.15s ease',
-              '&:hover': { bgcolor: alpha('#6c47ff', 0.06), color: 'primary.main' },
-            }}
+              '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.06), color: 'primary.main' },
+            })}
           >
             <Box sx={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -157,10 +170,10 @@ export function Navbar() {
         slotProps={{
           paper: {
             elevation: 0,
-            sx: {
+            sx: (theme) => ({
               mt: 1, minWidth: 180,
-              border: `1px solid ${alpha('#6c47ff', 0.1)}`,
-              boxShadow: '0 8px 32px rgba(108,71,255,0.12)',
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+              boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.12)}`,
               borderRadius: 2,
               overflow: 'visible',
               '&::before': {
@@ -170,11 +183,11 @@ export function Navbar() {
                 top: -6, left: '50%',
                 transform: 'translateX(-50%) rotate(45deg)',
                 width: 12, height: 12,
-                backgroundColor: '#fff',
-                border: `1px solid ${alpha('#6c47ff', 0.1)}`,
+                backgroundColor: theme.palette.background.paper,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
                 borderBottom: 'none', borderRight: 'none',
               },
-            },
+            }),
           },
         }}
       >
@@ -185,12 +198,12 @@ export function Navbar() {
               key={path}
               onClick={() => { setNavAnchor(null); navigate(path); }}
               selected={active}
-              sx={{
+              sx={(theme) => ({
                 gap: 1.5, py: 1.25,
                 color: active ? 'primary.main' : 'text.primary',
-                '&.Mui-selected': { bgcolor: alpha('#6c47ff', 0.06) },
-                '&.Mui-selected:hover': { bgcolor: alpha('#6c47ff', 0.1) },
-              }}
+                '&.Mui-selected': { bgcolor: alpha(theme.palette.primary.main, 0.06) },
+                '&.Mui-selected:hover': { bgcolor: alpha(theme.palette.primary.main, 0.1) },
+              })}
             >
               <ListItemIcon sx={{ minWidth: 'unset', color: active ? 'primary.main' : 'text.secondary' }}>
                 {icon}
@@ -219,10 +232,10 @@ export function Navbar() {
         slotProps={{
           paper: {
             elevation: 0,
-            sx: {
+            sx: (theme) => ({
               mt: 1, minWidth: 210,
-              border: `1px solid ${alpha('#6c47ff', 0.1)}`,
-              boxShadow: '0 8px 32px rgba(108,71,255,0.12)',
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+              boxShadow: `0 8px 32px ${alpha(theme.palette.primary.main, 0.12)}`,
               borderRadius: 2,
               overflow: 'visible',
               '&::before': {
@@ -231,12 +244,12 @@ export function Navbar() {
                 position: 'absolute',
                 top: -6, right: 18,
                 width: 12, height: 12,
-                backgroundColor: '#fff',
-                border: `1px solid ${alpha('#6c47ff', 0.1)}`,
+                backgroundColor: theme.palette.background.paper,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
                 borderBottom: 'none', borderRight: 'none',
                 transform: 'rotate(45deg)',
               },
-            },
+            }),
           },
         }}
       >
@@ -247,15 +260,23 @@ export function Navbar() {
             {user?.email ?? ''}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Box sx={{ flex: 1, textAlign: 'center', py: 0.75, borderRadius: 1.5, bgcolor: alpha('#6c47ff', 0.07), border: `1px solid ${alpha('#6c47ff', 0.1)}` }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#6c47ff', lineHeight: 1 }}>
+            <Box sx={(theme) => ({
+              flex: 1, textAlign: 'center', py: 0.75, borderRadius: 1.5,
+              bgcolor: alpha(theme.palette.primary.main, 0.07),
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+            })}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
                 {user?.receivedBalance ?? 0}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem' }}>received</Typography>
             </Box>
             {user?.givingBudget && (
-              <Box sx={{ flex: 1, textAlign: 'center', py: 0.75, borderRadius: 1.5, bgcolor: alpha('#ff6b6b', 0.07), border: `1px solid ${alpha('#ff6b6b', 0.1)}` }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: '#e04545', lineHeight: 1 }}>
+              <Box sx={(theme) => ({
+                flex: 1, textAlign: 'center', py: 0.75, borderRadius: 1.5,
+                bgcolor: alpha(theme.palette.secondary.main, 0.07),
+                border: `1px solid ${alpha(theme.palette.secondary.main, 0.1)}`,
+              })}>
+                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'secondary.dark', lineHeight: 1 }}>
                   {user.givingBudget.remaining}
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.6rem' }}>to give</Typography>

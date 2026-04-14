@@ -176,7 +176,7 @@ export function KudoComposerDialog({ open, onClose }: Props) {
       {/* Title */}
       <DialogTitle sx={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        pb: 1, borderBottom: `1px solid ${alpha('#6c47ff', 0.08)}`,
+        pb: 1, borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
       }}>
         <Typography variant="h6" fontWeight={700}>Give a Kudo</Typography>
         <IconButton size="small" onClick={handleClose} disabled={loading}>
@@ -214,8 +214,8 @@ export function KudoComposerDialog({ open, onClose }: Props) {
           sx={{
             '& .MuiOutlinedInput-root': {
               fontSize: '1rem',
-              '& fieldset': { borderColor: alpha('#6c47ff', 0.15) },
-              '&:hover fieldset': { borderColor: alpha('#6c47ff', 0.3) },
+              '& fieldset': { borderColor: alpha(theme.palette.primary.main, 0.15) },
+              '&:hover fieldset': { borderColor: alpha(theme.palette.primary.main, 0.3) },
             },
           }}
         />
@@ -259,12 +259,12 @@ export function KudoComposerDialog({ open, onClose }: Props) {
             <Typography variant="body2" fontWeight={600} color="text.secondary">Points to give</Typography>
             <Box sx={{
               px: 2, py: 0.25,
-              background: 'linear-gradient(135deg, #6c47ff 0%, #8b6dff 100%)',
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.light} 100%)`,
               borderRadius: '20px',
               display: 'inline-flex', alignItems: 'baseline', gap: 0.5,
             }}>
-              <Typography variant="h6" fontWeight={700} sx={{ color: '#fff', lineHeight: 1.2 }}>{points}</Typography>
-              <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.8)' }}>pts</Typography>
+              <Typography variant="h6" fontWeight={700} sx={{ color: 'primary.contrastText', lineHeight: 1.2 }}>{points}</Typography>
+              <Typography variant="caption" sx={{ color: alpha(theme.palette.primary.contrastText, 0.8) }}>pts</Typography>
             </Box>
           </Box>
           <Slider
@@ -273,7 +273,7 @@ export function KudoComposerDialog({ open, onClose }: Props) {
             min={10} max={50} step={5}
             marks={SLIDER_MARKS}
             sx={{
-              color: '#6c47ff',
+              color: 'primary.main',
               '& .MuiSlider-thumb': { width: 20, height: 20 },
               '& .MuiSlider-markLabel': { fontSize: '0.7rem' },
             }}
@@ -323,14 +323,14 @@ export function KudoComposerDialog({ open, onClose }: Props) {
                         width: 90, height: 90,
                         objectFit: 'contain', borderRadius: 2,
                         display: 'block',
-                        border: `1.5px solid ${alpha('#1a1033', 0.1)}`,
+                        border: `1.5px solid ${alpha(theme.palette.common.white, 0.12)}`,
                       }}
                     />
                   ) : (
                     <Box sx={{
                       width: 90, height: 90, borderRadius: 2, overflow: 'hidden',
-                      position: 'relative', bgcolor: '#111',
-                      border: `1.5px solid ${alpha('#1a1033', 0.1)}`,
+                      position: 'relative', bgcolor: 'common.black',
+                      border: `1.5px solid ${alpha(theme.palette.common.white, 0.12)}`,
                     }}>
                       <Box
                         component="video"
@@ -346,7 +346,7 @@ export function KudoComposerDialog({ open, onClose }: Props) {
                         bgcolor: 'rgba(0,0,0,0.38)',
                         pointerEvents: 'none',
                       }}>
-                        <PlayArrowIcon sx={{ color: '#fff', fontSize: 30 }} />
+                        <PlayArrowIcon sx={{ color: 'common.white', fontSize: 30 }} />
                       </Box>
                     </Box>
                   )}
@@ -359,8 +359,8 @@ export function KudoComposerDialog({ open, onClose }: Props) {
                     sx={{
                       position: 'absolute', top: -8, right: -8,
                       width: 22, height: 22, p: 0,
-                      bgcolor: 'error.main', color: '#fff',
-                      border: '2px solid #fff',
+                      bgcolor: 'error.main', color: 'error.contrastText',
+                      border: '2px solid', borderColor: 'background.default',
                       zIndex: 1,
                       '&:hover': { bgcolor: 'error.dark' },
                     }}
@@ -379,12 +379,12 @@ export function KudoComposerDialog({ open, onClose }: Props) {
                     display: 'flex', flexDirection: 'column',
                     alignItems: 'center', justifyContent: 'center', gap: 0.25,
                     border: '2px dashed',
-                    borderColor: alpha('#1a1033', 0.2),
+                    borderColor: alpha(theme.palette.common.white, 0.18),
                     borderRadius: 2,
                     cursor: 'pointer', transition: 'all 0.15s ease',
                     '&:hover': {
-                      borderColor: '#6c47ff',
-                      bgcolor: alpha('#6c47ff', 0.04),
+                      borderColor: theme.palette.primary.main,
+                      bgcolor: alpha(theme.palette.primary.main, 0.04),
                     },
                   }}
                   onClick={() => fileInputRef.current?.click()}
@@ -404,10 +404,10 @@ export function KudoComposerDialog({ open, onClose }: Props) {
               sx={{
                 display: 'flex', alignItems: 'center', gap: 1.5,
                 border: '2px dashed',
-                borderColor: alpha('#1a1033', 0.2),
+                borderColor: alpha(theme.palette.common.white, 0.18),
                 borderRadius: 2, p: 2,
                 cursor: 'pointer', transition: 'all 0.15s ease',
-                '&:hover': { borderColor: '#6c47ff', bgcolor: alpha('#6c47ff', 0.04) },
+                '&:hover': { borderColor: theme.palette.primary.main, bgcolor: alpha(theme.palette.primary.main, 0.04) },
               }}
               onClick={() => fileInputRef.current?.click()}
             >

@@ -1,56 +1,60 @@
 import { createTheme, alpha } from '@mui/material/styles';
 
-// ─── Colour tokens ────────────────────────────────────────────────────────────
-const PRIMARY = '#6c47ff';      // brand violet
-const SECONDARY = '#ff6b6b';    // coral accent
-const SUCCESS = '#22c55e';
-const WARNING = '#f59e0b';
-const ERROR = '#ef4444';
-const INFO = '#3b82f6';
-const BG_DEFAULT = '#f5f4ff';   // very light violet tint
-const BG_PAPER = '#ffffff';
-const TEXT_PRIMARY = '#1a1033';
-const TEXT_SECONDARY = '#6b7280';
+// ─── Color tokens ─────────────────────────────────────────────────────────────
+const PRIMARY        = '#6c47ff';   // brand violet
+const PRIMARY_LIGHT  = '#8b6dff';   // gradient accent
+const SECONDARY      = '#ff6b6b';   // coral accent
+const SECONDARY_DARK = '#e04545';   // secondary dark variant
+const SUCCESS        = '#22c55e';
+const WARNING        = '#f59e0b';
+const ERROR          = '#ef4444';
+const INFO           = '#3b82f6';
+
+// Dark palette
+const BG_DEFAULT     = '#1a1630';   // app background
+const BG_PAPER       = '#26214a';   // card, dialog, input
+const TEXT_PRIMARY   = '#ede8ff';
+const TEXT_SECONDARY = '#9d93bf';
 
 // ─── Core Value Metadata ──────────────────────────────────────────────────────
 export const CORE_VALUE_META: Record<string, { color: string; bg: string }> = {
-  '#Teamwork':      { color: '#7c3aed', bg: '#ede9fe' },
-  '#Ownership':     { color: '#0369a1', bg: '#e0f2fe' },
-  '#Innovation':    { color: '#d97706', bg: '#fef3c7' },
-  '#CustomerFirst': { color: '#059669', bg: '#d1fae5' },
-  '#Integrity':     { color: '#db2777', bg: '#fce7f3' },
+  '#Teamwork':      { color: '#a78bfa', bg: alpha('#7c3aed', 0.2) },
+  '#Ownership':     { color: '#38bdf8', bg: alpha('#0369a1', 0.2) },
+  '#Innovation':    { color: '#fbbf24', bg: alpha('#d97706', 0.2) },
+  '#CustomerFirst': { color: '#34d399', bg: alpha('#059669', 0.2) },
+  '#Integrity':     { color: '#f472b6', bg: alpha('#db2777', 0.2) },
 };
 
 // ─── Theme ────────────────────────────────────────────────────────────────────
 const theme = createTheme({
   // ── Palette ─────────────────────────────────────────────────────────────────
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
       main: PRIMARY,
-      light: alpha(PRIMARY, 0.12),
+      light: PRIMARY_LIGHT,
       dark: '#4c2fd6',
       contrastText: '#ffffff',
     },
     secondary: {
       main: SECONDARY,
-      light: alpha(SECONDARY, 0.12),
-      dark: '#e04545',
+      light: alpha(SECONDARY, 0.15),
+      dark: SECONDARY_DARK,
       contrastText: '#ffffff',
     },
     success: { main: SUCCESS },
     warning: { main: WARNING },
-    error: { main: ERROR },
-    info: { main: INFO },
+    error:   { main: ERROR },
+    info:    { main: INFO },
     background: {
       default: BG_DEFAULT,
-      paper: BG_PAPER,
+      paper:   BG_PAPER,
     },
     text: {
-      primary: TEXT_PRIMARY,
+      primary:   TEXT_PRIMARY,
       secondary: TEXT_SECONDARY,
     },
-    divider: alpha(PRIMARY, 0.1),
+    divider: alpha(PRIMARY, 0.15),
   },
 
   // ── Typography ───────────────────────────────────────────────────────────────
@@ -70,25 +74,25 @@ const theme = createTheme({
   // ── Shape ────────────────────────────────────────────────────────────────────
   shape: { borderRadius: 12 },
 
-  // ── Shadows — lighter than default ──────────────────────────────────────────
+  // ── Shadows ──────────────────────────────────────────────────────────────────
   shadows: [
     'none',
-    '0 1px 3px rgba(0,0,0,.06)',
-    '0 2px 6px rgba(0,0,0,.08)',
-    '0 4px 12px rgba(0,0,0,.10)',
-    '0 6px 16px rgba(0,0,0,.10)',
-    '0 8px 24px rgba(0,0,0,.12)',
+    '0 1px 3px rgba(0,0,0,.3)',
+    '0 2px 6px rgba(0,0,0,.35)',
+    '0 4px 12px rgba(0,0,0,.4)',
+    '0 6px 16px rgba(0,0,0,.4)',
+    '0 8px 24px rgba(0,0,0,.45)',
     ...Array(19).fill('none'),
   ] as import('@mui/material/styles').Shadows,
 
   // ── Component overrides ──────────────────────────────────────────────────────
   components: {
-    // MuiCssBaseline: inject Inter font + global keyframes
+    // CssBaseline — Inter font + global keyframes
     MuiCssBaseline: {
       styleOverrides: `
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
-        body { background-color: ${BG_DEFAULT}; }
+        body { background-color: ${BG_DEFAULT}; color: ${TEXT_PRIMARY}; }
 
         @keyframes pop {
           0%   { transform: scale(1); }
@@ -107,11 +111,7 @@ const theme = createTheme({
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
-        root: {
-          borderRadius: 8,
-          paddingTop: 8,
-          paddingBottom: 8,
-        },
+        root: { borderRadius: 8, paddingTop: 8, paddingBottom: 8 },
         containedPrimary: {
           background: `linear-gradient(135deg, ${PRIMARY} 0%, #8b6dff 100%)`,
           '&:hover': {
@@ -121,16 +121,17 @@ const theme = createTheme({
       },
     },
 
-    // Card — subtle elevation + crisp border + hover lift
+    // Card
     MuiCard: {
       defaultProps: { elevation: 2 },
       styleOverrides: {
         root: {
           borderRadius: 16,
-          border: `1px solid ${alpha(PRIMARY, 0.08)}`,
+          border: `1px solid ${alpha(PRIMARY, 0.12)}`,
+          backgroundImage: 'none',
           transition: 'box-shadow 0.2s ease, transform 0.2s ease',
           '&:hover': {
-            boxShadow: `0 8px 24px ${alpha(PRIMARY, 0.14)}`,
+            boxShadow: `0 8px 24px ${alpha(PRIMARY, 0.2)}`,
             transform: 'translateY(-2px)',
           },
         },
@@ -144,10 +145,15 @@ const theme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          borderRadius: 8,
-          backgroundColor: BG_PAPER,
+          borderRadius: 10,
+          backgroundColor: alpha(BG_PAPER, 0.6),
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
             borderWidth: 2,
+            borderColor: PRIMARY,
+          },
+          '& input:-webkit-autofill': {
+            WebkitBoxShadow: `0 0 0 100px ${BG_PAPER} inset`,
+            WebkitTextFillColor: TEXT_PRIMARY,
           },
         },
       },
@@ -158,19 +164,19 @@ const theme = createTheme({
       styleOverrides: {
         root: { borderRadius: 6, fontWeight: 500 },
         colorPrimary: {
-          backgroundColor: alpha(PRIMARY, 0.12),
-          color: PRIMARY,
+          backgroundColor: alpha(PRIMARY, 0.18),
+          color: '#c4b5fd',
         },
       },
     },
 
-    // AppBar — white with slight shadow
+    // AppBar
     MuiAppBar: {
       defaultProps: { elevation: 0, color: 'inherit' },
       styleOverrides: {
         root: {
           backgroundColor: BG_PAPER,
-          borderBottom: `1px solid ${alpha(PRIMARY, 0.08)}`,
+          borderBottom: `1px solid ${alpha(PRIMARY, 0.12)}`,
         },
       },
     },
@@ -179,25 +185,26 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: {
         rounded: { borderRadius: 16 },
+        root: { backgroundImage: 'none' },
       },
     },
 
-    // Avatar — primary colour by default
+    // Avatar
     MuiAvatar: {
       styleOverrides: {
         root: {
-          backgroundColor: alpha(PRIMARY, 0.15),
-          color: PRIMARY,
+          backgroundColor: alpha(PRIMARY, 0.2),
+          color: '#c4b5fd',
           fontWeight: 600,
         },
       },
     },
 
-    // Tooltip — dark background
+    // Tooltip
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: TEXT_PRIMARY,
+          backgroundColor: '#2d2550',
           borderRadius: 6,
           fontSize: '0.75rem',
         },
@@ -208,6 +215,13 @@ const theme = createTheme({
     MuiAlert: {
       styleOverrides: {
         root: { borderRadius: 8 },
+      },
+    },
+
+    // Dialog
+    MuiDialog: {
+      styleOverrides: {
+        paper: { backgroundImage: 'none' },
       },
     },
   },
