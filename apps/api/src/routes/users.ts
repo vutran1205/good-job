@@ -32,10 +32,24 @@ usersRouter.get('/ledger', authMiddleware, async (req: AuthRequest, res: Respons
 });
 
 usersRouter.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
+  const q = typeof req.query.q === 'string' ? req.query.q.trim() : '';
+  const limit = Math.min(Number(req.query.limit) || 20, 50);
+
   const users = await prisma.user.findMany({
-    where: { id: { not: req.userId } },
+    where: {
+      id: { not: req.userId },
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { email: { contains: q, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+    },
     select: { id: true, name: true, email: true },
     orderBy: { name: 'asc' },
+    take: limit,
   });
   res.json(users);
 });

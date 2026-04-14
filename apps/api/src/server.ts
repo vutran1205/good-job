@@ -11,7 +11,7 @@ const app = createApp();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
-const KUDO_CHANNELS = ['kudo:created', 'kudo:reaction', 'kudo:comment'];
+const KUDO_CHANNELS = ['kudo:created', 'kudo:reaction', 'kudo:comment', 'comment:reaction'];
 
 wss.on('connection', (ws) => {
   const handler = (data: unknown) => {

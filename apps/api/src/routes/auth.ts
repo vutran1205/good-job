@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { type SignOptions } from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma';
@@ -8,7 +8,7 @@ import { redis } from '../lib/redis';
 
 export const authRouter = Router();
 
-const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES_IN || '15m';
+const ACCESS_EXPIRES = (process.env.JWT_ACCESS_EXPIRES_IN || '15m') as SignOptions['expiresIn'];
 const REFRESH_TTL_SEC = 7 * 24 * 60 * 60; // 7 days
 
 const registerSchema = z.object({
@@ -115,7 +115,10 @@ authRouter.post('/refresh', async (req: Request, res: Response) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as { sub: string; jti: string };
+    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as {
+      sub: string;
+      jti: string;
+    };
 
     const storedUserId = await redis.get(`refresh:${payload.jti}`);
     if (!storedUserId || storedUserId !== payload.sub) {

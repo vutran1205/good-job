@@ -29,15 +29,24 @@ export function startVideoWorker() {
 
         await new Promise<void>((resolve, reject) => {
           const ffmpeg = spawn(ffmpegBin, [
-            '-i', tmpInput,
-            '-t', '180',
-            '-vf', 'scale=1280:-2',
-            '-c:v', 'libx264',
-            '-crf', '23',
-            '-preset', 'fast',
-            '-c:a', 'aac',
-            '-movflags', '+faststart',
-            '-y', tmpOutput,
+            '-i',
+            tmpInput,
+            '-t',
+            '180',
+            '-vf',
+            'scale=1280:-2',
+            '-c:v',
+            'libx264',
+            '-crf',
+            '23',
+            '-preset',
+            'fast',
+            '-c:a',
+            'aac',
+            '-movflags',
+            '+faststart',
+            '-y',
+            tmpOutput,
           ]);
 
           ffmpeg.on('close', (code) => {

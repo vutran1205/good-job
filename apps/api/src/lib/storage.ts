@@ -12,7 +12,10 @@ import fs from 'fs';
 
 const ENDPOINT = process.env.MINIO_ENDPOINT || 'http://localhost:9000';
 export const BUCKET = process.env.MINIO_BUCKET || 'good-job';
-const PUBLIC_URL = (process.env.MINIO_PUBLIC_URL || 'http://localhost:3000/media').replace(/\/$/, '');
+const PUBLIC_URL = (process.env.MINIO_PUBLIC_URL || 'http://localhost:3000/media').replace(
+  /\/$/,
+  '',
+);
 
 const s3 = new S3Client({
   endpoint: ENDPOINT,
@@ -56,14 +59,22 @@ export function urlToKey(url: string): string {
   return url.replace(`${PUBLIC_URL}/${BUCKET}/`, '');
 }
 
-export async function uploadBuffer(key: string, buffer: Buffer, contentType: string): Promise<string> {
+export async function uploadBuffer(
+  key: string,
+  buffer: Buffer,
+  contentType: string,
+): Promise<string> {
   await s3.send(
     new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: buffer, ContentType: contentType }),
   );
   return keyToUrl(key);
 }
 
-export async function uploadFile(key: string, filePath: string, contentType: string): Promise<string> {
+export async function uploadFile(
+  key: string,
+  filePath: string,
+  contentType: string,
+): Promise<string> {
   await s3.send(
     new PutObjectCommand({
       Bucket: BUCKET,

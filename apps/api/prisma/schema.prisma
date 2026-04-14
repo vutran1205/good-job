@@ -9,19 +9,20 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(cuid())
-  name            String
-  email           String        @unique
-  passwordHash    String
-  receivedBalance Int           @default(0)
-  createdAt       DateTime      @default(now())
-  kudosSent       Kudo[]        @relation("Sender")
-  kudosReceived   Kudo[]        @relation("Recipient")
-  givingBudget    GivingBudget?
-  reactions       Reaction[]
-  comments        Comment[]
-  redemptions     Redemption[]
-  ledgerEntries   LedgerEntry[]
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  passwordHash     String
+  receivedBalance  Int               @default(0)
+  createdAt        DateTime          @default(now())
+  kudosSent        Kudo[]            @relation("Sender")
+  kudosReceived    Kudo[]            @relation("Recipient")
+  givingBudget     GivingBudget?
+  reactions        Reaction[]
+  commentReactions CommentReaction[]
+  comments         Comment[]
+  redemptions      Redemption[]
+  ledgerEntries    LedgerEntry[]
 }
 
 model GivingBudget {
@@ -68,14 +69,26 @@ model Reaction {
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String            @id @default(cuid())
   kudoId    String
   userId    String
   text      String?
   mediaUrl  String?
-  createdAt DateTime @default(now())
-  kudo      Kudo     @relation(fields: [kudoId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime          @default(now())
+  kudo      Kudo              @relation(fields: [kudoId], references: [id], onDelete: Cascade)
+  user      User              @relation(fields: [userId], references: [id])
+  reactions CommentReaction[]
+}
+
+model CommentReaction {
+  id        String  @id @default(cuid())
+  commentId String
+  userId    String
+  emoji     String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId, emoji])
 }
 
 model RewardItem {
@@ -83,7 +96,7 @@ model RewardItem {
   name        String
   pointCost   Int
   description String?
-  stock       Int?         // null = unlimited
+  stock       Int? // null = unlimited
   redemptions Redemption[]
 }
 

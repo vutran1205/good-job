@@ -57,8 +57,8 @@ export async function giveKudo(
 
     await tx.ledgerEntry.createMany({
       data: [
-        { userId: recipientId, delta: points,  reason: 'kudo_received', refId: newKudo.id },
-        { userId: senderId,    delta: -points, reason: 'kudo_sent',     refId: newKudo.id },
+        { userId: recipientId, delta: points, reason: 'kudo_received', refId: newKudo.id },
+        { userId: senderId, delta: -points, reason: 'kudo_sent', refId: newKudo.id },
       ],
     });
 
@@ -80,7 +80,10 @@ export async function getKudosFeed(cursor?: string, limit = 20) {
       media: true,
       reactions: { include: { user: { select: { id: true, name: true } } } },
       comments: {
-        include: { user: { select: { id: true, name: true } } },
+        include: {
+          user: { select: { id: true, name: true } },
+          reactions: { include: { user: { select: { id: true, name: true } } } },
+        },
         orderBy: { createdAt: 'asc' },
       },
     },

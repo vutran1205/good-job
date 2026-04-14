@@ -1,26 +1,27 @@
 import { useState, useEffect } from 'react';
 import {
-  Box, Button, TextField, Typography,
-  Checkbox, FormControlLabel, Divider, InputAdornment, IconButton,
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Checkbox,
+  FormControlLabel,
+  Divider,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '../store/auth.store';
-import { useNotificationStore } from '../store/notification.store';
+import { useAuthStore } from '../../store/auth.store';
+import { useNotificationStore } from '../../store/notification.store';
+import { loginSchema, type LoginForm } from '../../schemas/auth.schema';
 
 const REMEMBER_KEY = 'gj_remember';
-
-const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-type LoginForm = z.infer<typeof loginSchema>;
 
 export function Login() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -42,7 +43,9 @@ export function Login() {
           const { email, password } = JSON.parse(saved);
           return { email: email ?? '', password: password ?? '' };
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       return { email: '', password: '' };
     })(),
   });
@@ -51,7 +54,9 @@ export function Login() {
     try {
       const saved = localStorage.getItem(REMEMBER_KEY);
       if (saved) setRememberMe(true);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   async function onSubmit(values: LoginForm) {
@@ -73,42 +78,71 @@ export function Login() {
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', bgcolor: 'background.default' }}>
       {/* Left panel — branding */}
-      <Box sx={{
-        flex: 1,
-        display: { xs: 'none', md: 'flex' },
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: 6,
-        position: 'relative',
-        overflow: 'hidden',
-      }}>
-        {/* Decorative blobs */}
-        <Box sx={{
-          position: 'absolute', width: 400, height: 400, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(108,71,255,0.3) 0%, transparent 70%)',
-          top: -80, left: -80, pointerEvents: 'none',
-        }} />
-        <Box sx={{
-          position: 'absolute', width: 300, height: 300, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,107,107,0.15) 0%, transparent 70%)',
-          bottom: 40, right: -60, pointerEvents: 'none',
-        }} />
+      <Box
+        sx={{
+          flex: 1,
+          display: { xs: 'none', md: 'flex' },
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: 6,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            width: 400,
+            height: 400,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(108,71,255,0.3) 0%, transparent 70%)',
+            top: -80,
+            left: -80,
+            pointerEvents: 'none',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            width: 300,
+            height: 300,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255,107,107,0.15) 0%, transparent 70%)',
+            bottom: 40,
+            right: -60,
+            pointerEvents: 'none',
+          }}
+        />
 
         <Box sx={{ position: 'relative', textAlign: 'center' }}>
-          <Box sx={{
-            width: 80, height: 80, borderRadius: 4, mx: 'auto', mb: 3,
-            bgcolor: 'primary.main',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: 5,
-          }}>
+          <Box
+            sx={{
+              width: 80,
+              height: 80,
+              borderRadius: 4,
+              mx: 'auto',
+              mb: 3,
+              bgcolor: 'primary.main',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: 5,
+            }}
+          >
             <EmojiEventsIcon sx={{ fontSize: 44 }} />
           </Box>
           <Typography variant="h3" fontWeight={800} sx={{ mb: 1.5, letterSpacing: '-0.5px' }}>
             Good Job
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 320, mx: 'auto', lineHeight: 1.6 }}>
-            Recognise your teammates,<br />celebrate great work together.
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{ fontWeight: 400, maxWidth: 320, mx: 'auto', lineHeight: 1.6 }}
+          >
+            Recognise your teammates,
+            <br />
+            celebrate great work together.
           </Typography>
 
           <Box sx={{ mt: 6, display: 'flex', flexDirection: 'column', gap: 2, textAlign: 'left' }}>
@@ -127,27 +161,36 @@ export function Login() {
       </Box>
 
       {/* Right panel — form */}
-      <Box sx={{
-        width: { xs: '100%', md: 480 },
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        p: { xs: 3, sm: 6 },
-        bgcolor: 'background.paper',
-        borderLeft: 1,
-        borderColor: 'divider',
-      }}>
+      <Box
+        sx={{
+          width: { xs: '100%', md: 480 },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          p: { xs: 3, sm: 6 },
+          bgcolor: 'background.paper',
+          borderLeft: 1,
+          borderColor: 'divider',
+        }}
+      >
         <Box sx={{ width: '100%', maxWidth: 380 }}>
-          {/* Mobile logo */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1.5, mb: 4 }}>
-            <Box sx={{
-              width: 40, height: 40, borderRadius: 2,
-              bgcolor: 'primary.main',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: 2,
+                bgcolor: 'primary.main',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
               <EmojiEventsIcon sx={{ fontSize: 24 }} />
             </Box>
-            <Typography variant="h6" fontWeight={700}>Good Job</Typography>
+            <Typography variant="h6" fontWeight={700}>
+              Good Job
+            </Typography>
           </Box>
 
           <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
@@ -157,7 +200,12 @@ export function Login() {
             Sign in to your account to continue
           </Typography>
 
-          <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit(onSubmit)}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
+          >
             <TextField
               label="Email"
               fullWidth
@@ -177,7 +225,11 @@ export function Login() {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton onClick={() => setShowPassword((v) => !v)} edge="end">
-                        {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                        {showPassword ? (
+                          <VisibilityOff fontSize="small" />
+                        ) : (
+                          <Visibility fontSize="small" />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),

@@ -4,10 +4,29 @@ import { api } from '../lib/api';
 import { useAuthStore } from '../store/auth.store';
 import { useNotificationStore } from '../store/notification.store';
 
-interface UserRef { id: string; name: string }
-interface Media { id: string; type: string; url: string; status: string }
-interface Reaction { id: string; emoji: string; user: UserRef }
-interface Comment { id: string; text?: string; mediaUrl?: string; user: UserRef; createdAt: string }
+interface UserRef {
+  id: string;
+  name: string;
+}
+interface Media {
+  id: string;
+  type: string;
+  url: string;
+  status: string;
+}
+interface Reaction {
+  id: string;
+  emoji: string;
+  user: UserRef;
+}
+interface Comment {
+  id: string;
+  text?: string;
+  mediaUrl?: string;
+  user: UserRef;
+  createdAt: string;
+  reactions: Reaction[];
+}
 export interface KudoItem {
   id: string;
   points: number;

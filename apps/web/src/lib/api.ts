@@ -33,7 +33,9 @@ api.interceptors.response.use(
         refreshPromise = axios
           .post('/api/auth/refresh', null, { withCredentials: true })
           .then((r) => r.data.accessToken)
-          .finally(() => { refreshPromise = null; });
+          .finally(() => {
+            refreshPromise = null;
+          });
       }
 
       const newToken = await refreshPromise;

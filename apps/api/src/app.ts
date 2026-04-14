@@ -31,6 +31,7 @@ export function createApp() {
     try {
       const { body, contentType } = await streamObject(key);
       if (contentType) res.setHeader('Content-Type', contentType);
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       body.pipe(res);
     } catch {
